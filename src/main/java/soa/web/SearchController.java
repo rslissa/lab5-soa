@@ -11,18 +11,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class SearchController {
 
-    @Autowired
-    private ProducerTemplate producerTemplate;
+  private final ProducerTemplate producerTemplate;
 
-    @RequestMapping("/")
-    public String index() {
-        return "index";
-    }
+  @Autowired
+  public SearchController(ProducerTemplate producerTemplate) {
+    this.producerTemplate = producerTemplate;
+  }
+
+  @RequestMapping("/")
+  public String index() {
+    return "index";
+  }
 
 
-    @RequestMapping(value="/search")
-    @ResponseBody
-    public Object search(@RequestParam("q") String q) {
-        return producerTemplate.requestBodyAndHeader("direct:search", "", "CamelTwitterKeywords", q);
-    }
+  @RequestMapping(value = "/search")
+  @ResponseBody
+  public Object search(@RequestParam("q") String q) {
+    return producerTemplate.requestBodyAndHeader("direct:search", "", "CamelTwitterKeywords", q);
+  }
 }
