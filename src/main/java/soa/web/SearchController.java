@@ -1,11 +1,16 @@
 package soa.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.thymeleaf.engine.ProcessorTemplateHandler;
 
 
 @Controller
@@ -26,7 +31,11 @@ public class SearchController {
 
   @RequestMapping(value = "/search")
   @ResponseBody
-  public Object search(@RequestParam("q") String q) {
-    return producerTemplate.requestBodyAndHeader("direct:search", "", "CamelTwitterKeywords", q);
+  public Object search(@RequestParam("q") String q, @RequestParam(value = "max", required = false, defaultValue = "10") int max) {
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("CamelTwitterKeywords", q);
+    headers.put("CamelTwitterCount", max);
+
+    return producerTemplate.requestBodyAndHeaders("direct:search", "", headers);
   }
 }
